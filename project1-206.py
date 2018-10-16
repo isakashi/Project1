@@ -2,33 +2,36 @@ import os
 import filecmp
 from dateutil.relativedelta import *
 from datetime import date
-
+import csv
 
 def getData(file):
-# get a list of dictionary objects from the file
+# get a list of dictionary objects from the file, setting the first row of data as the keys and the other rows as values
 #Input: file name
 #Ouput: return a list of dictionary objects where
-#the keys are from the first row in the data. and the values are each of the other rows
-	inFile = open(file, "r")
-	line = inFile.readlines()
-
-	d = {}
-
-	while line:
-		d.update({line[0]: line[1:]})
-
-		line = inFile.readlines()
-
-	print(d)
-	inFile.close()
-
+	
+	a = []
+	with open(file) as myfile:
+		firstline = True
+		for line in myfile:
+			if firstline:
+				mykeys = "".join(line.split()).split(',')
+				firstline = False
+			else:
+				values = ''.join(line.split()).split(',')
+				a.append({mykeys[n]:values[n] for n in range(0, len(mykeys))})
+	return a
 
 def mySort(data,col):
 # Sort based on key/column
 #Input: list of dictionaries and col (key) to sort on
 #Output: Return the first item in the sorted list as a string of just: firstName lastName
+	
+	sort_list = sorted(data, key = lambda k: k[col])
 
-	pass
+	first_name =  sort_list[0]['First']
+	last_name = sort_list[0]['Last']
+
+	return first_name + " " + last_name
 
 
 def classSizes(data):
@@ -38,7 +41,23 @@ def classSizes(data):
 # descending order
 # [('Senior', 26), ('Junior', 25), ('Freshman', 21), ('Sophomore', 18)]
 
-	pass
+	seniors = 0
+	juniors = 0
+	sophomores = 0
+	freshman = 0
+
+	for student in data:
+		if student['Class'] == 'Senior':
+			seniors += 1
+		elif student['Class'] == 'Junior':
+			juniors += 1
+		elif student['Class'] == 'Sophomore':
+			sophomores += 1
+		else:
+			freshman += 1
+
+	student_class = [('Senior', seniors), ('Junior', juniors), ('Sophomore', sophomores), ('Freshman', freshman)]
+	return sorted(student_class, key = lambda k: k[1], reverse = True)
 
 
 def findMonth(a):
@@ -46,7 +65,57 @@ def findMonth(a):
 # Input: list of dictionaries
 # Output: Return the month (1-12) that had the most births in the data
 
-	pass
+	one = 0
+	two = 0
+	three = 0
+	four = 0
+	five = 0
+	six = 0
+	seven = 0
+	eight = 0
+	nine = 0
+	ten = 0
+	eleven = 0
+	twelve = 0
+
+	for student in a:
+		birthday = student['DOB']
+		dates = birthday.split('/')
+		month = dates[0]
+
+		if month == '1':
+			one += 1
+		elif month == '2':
+			two += 1
+		elif month == '3':
+			three += 1
+		elif month == '4':
+			four += 1
+		elif month == '5':
+			five += 1
+		elif month == '6':
+			six += 1
+		elif month == '7':
+			seven += 1
+		elif month == '8':
+			eight += 1
+		elif month == '9':
+			nine += 1
+		elif month == '10':
+			ten += 1
+		elif month == '11':
+			eleven += 1
+		elif month == '12':
+			twelve += 1
+
+	months = [(1, one), (2, two), (3, three), (4, four), (5, five), (6, six), (7, seven), (8, eight), (9, nine), (10, ten), (11, eleven), (12, twelve)]
+
+	months_sorted = sorted(months, key = lambda k: k[1], reverse = True)
+
+	return months_sorted[0][0]
+
+
+
 
 def mySortPrint(a,col,fileName):
 #Similar to mySort, but instead of returning single
@@ -55,7 +124,17 @@ def mySortPrint(a,col,fileName):
 #Input: list of dictionaries, col (key) to sort by and output file name
 #Output: No return value, but the file is written
 
-	pass
+	sort_list = sorted(a, key = lambda k: k[col])
+
+	with open(fileName, mode = 'w+') as csv_file:
+		fieldnames = ['First', 'Last', 'Email']
+		writer = csv.DictWriter(csv_file, fieldnames = fieldnames)
+
+		for row in sort_list:
+			row = ({'First': row['First'], 'Last': row['Last'], 'Email': row['Email']})
+			writer.writerow(row)
+
+	
 
 def findAge(a):
 # def findAge(a):
