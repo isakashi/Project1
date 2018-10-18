@@ -127,12 +127,13 @@ def mySortPrint(a,col,fileName):
 	sort_list = sorted(a, key = lambda k: k[col])
 
 	with open(fileName, mode = 'w+') as csv_file:
-		fieldnames = ['First', 'Last', 'Email']
-		writer = csv.DictWriter(csv_file, fieldnames = fieldnames)
+		'''fieldnames = ['First', 'Last', 'Email']
+		writer = csv.DictWriter(csv_file, fieldnames = fieldnames)'''
 
 		for row in sort_list:
-			row = ({'First': row['First'], 'Last': row['Last'], 'Email': row['Email']})
-			writer.writerow(row)
+			csv_file.write(row['First'] + ',' + row['Last'] + ',' +row['Email'])
+			csv_file.write("\n")
+			
 
 	
 
@@ -142,8 +143,8 @@ def findAge(a):
 # Output: Return the average age of the students and round that age to the nearest
 # integer.  You will need to work with the DOB and the current date to find the current
 # age in years.
-
 	pass
+	
 
 
 ################################################################
